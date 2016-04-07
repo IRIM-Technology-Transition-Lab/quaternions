@@ -1,1 +1,1 @@
-# python_dual_quaternions
+# python_quaternions
