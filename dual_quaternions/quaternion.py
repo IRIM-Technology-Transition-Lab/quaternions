@@ -60,7 +60,7 @@ class Quaternion(object):
     def unit(self):
         q/norm(q)
 
-    def reciprical(self):
+    def reciprocal(self):
         if q non zero:
             q*/(norm(x)^2)
     # Test: recip(q) q = 1 & q recip(q) = 1
