@@ -161,18 +161,72 @@ class Quaternion(object):
 
     @classmethod
     def from_translation(cls, translation):
+        """
+        Generates a quaternion from a translation. Meant to be used along with
+        the dual operator to generate dual quaternions
+        Args:
+            translation: A list of three numbers representing the (x,y,z)
+                         translation
+
+        Returns:
+            The quaternion created from the translation
+        """
+        if (len(translation) != 3 or
+                not all(isinstance(x, (int, float)) for x in translation)):
+            raise ValueError(
+                "You must pass exactly 3 numeric values for the translation")
+        return cls(0,translation[0]/2, translation[1]/2, translation[2]/2)
 
     @classmethod
     def from_axis_angle(cls, axis, angle):
+        """
+        Constructs a quaternion from axis-angle measurements.
+
+        Args:
+            axis: A list of three numbers representing the axis of rotation.
+            angle: A single number representing the rotation about the axis in
+                   **radians**
+
+        Returns:
+            The constructed quaternion
+        """
+        if (len(axis) != 3 or
+                not all(isinstance(x, (int, float)) for x in axis)):
+            raise ValueError(
+                "You must pass exactly 3 numeric values for the axis")
+        if not isinstance(angle, (int,float)):
+            raise ValueError("The angle value must be a single numeric value")
         sin_result = math.sin(angle/2)
-        return cls(math.cos(angle/2), axis[0]*sin_result, axis[1]*sin_result, axis[2]*sin_result)
+        return cls(math.cos(angle/2), axis[0]*sin_result, axis[1]*sin_result,
+                   axis[2]*sin_result)
 
     def __add__(self, other):
+        """
+        Add together two quaternions.
+
+        Args:
+            other (Quaternion): The quaternion to add.
+
+        Returns:
+            The result of the addition.
+        """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
-        return Quaternion(self.w + other.w, self.x + other.x, self.y + other.y, self.z + other.z)
+        return Quaternion(self.w + other.w, self.x + other.x, self.y + other.y,
+                          self.z + other.z)
 
     def __mul__(self, other):
+        """
+        Multiply two quaternions.
+
+        Args:
+            other (Quaternion): The quaternion to multiply by. The caller will
+                                be on the left side and the callee argument will
+                                be on the right side
+
+        Returns:
+            The result of the multiplication.
+        """
         if isinstance(other, Quaternion):
             return Quaternion((self.w * other.w) - (self.x * other.x) - (self.y * other.y) - (self.z * other.z),
                               (self.w * other.x) + (self.x * other.w) + (self.y * other.z) - (self.z * other.y),
@@ -184,23 +238,59 @@ class Quaternion(object):
             return NotImplemented
 
     def conjugate(self):
+        """Return the conjugate of the quaternion.
+
+        Returns:
+            The conjugate of the quaternion
+        """
         return Quaternion(self.w, -self.x, -self.y, -self.z)
-    # Test: conjugate of conjugate equals original
+    # Test: q=(q*)*
     # Test: (pq)* = q*p*
 
-    def norm(self):
+    def magnitude(self):
+        """Return the magnitude of the quaternion
+
+        Returns:
+            The magnitude of the quaternion
+        """
         return math.sqrt(math.pow(self.w, 2) + math.pow(self.x, 2) + math.pow(self.y, 2) + math.pow(self.z, 2))
+
+    def norm(self):
+        """
+        Return Quaternion normalized
+        Returns:
+            Normalized quaternion
+        """
+        mag = self.magnitude()
+        return Quaternion(self.w/mag, self.x/mag, self.y/mag, self.z/mag)
     # Test: norm(x) = sqrt(x x*) = sqrt(x* x) > 0 & Real
     # Test: norm(w q) = abs(real) norm(q) given w is scalar
     # Test: norm(p q) = norm(p) norm(q)
     # Test: norm(p + w p1 + q + aq1) - (p+q)) = w norm(p1 + q1) given w is scalar
 
     def __sub__(self, other):
+        """Subtract the argument from the caller
+
+        Args:
+            other (Quaternion): The quaternion to subtract by
+
+        Returns:
+            The result of subtraction
+        """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
         return Quaternion(self.w - other.w, self.x - other.x, self.y - other.y, self.z - other.z)
 
     def distance(self, other):
+        """
+        Return the rotational distance between two quaternions.
+
+        Args:
+            other (Quaternion): The other
+
+        Returns:
+
+        """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
         return (self - other).norm()
