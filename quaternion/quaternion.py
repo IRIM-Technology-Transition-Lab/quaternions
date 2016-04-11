@@ -1,3 +1,9 @@
+"""
+A module to hold and work with Quaternions
+
+Copyright (c) 2016 Michael Sobrepera
+"""
+
 import math
 
 class Quaternion(object):
@@ -11,8 +17,118 @@ class Quaternion(object):
     @classmethod
     def from_matrix(cls, matrix):
 
+        return cls()
+
     @classmethod
-    def from_euler(cls, values, axes):
+    def from_euler(cls, values, axes=['x','y','z']):
+        """
+        Constructs a quaternion using a 3 member list of Euler angles, along
+        with a list defining their rotation sequence.
+        Based off of this: http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
+
+        Args:
+            values (list of numbers): 3 member list giving the rotations of the
+                                      Euler angles in **radians**
+            axes (list of chars): 3 member list specifying the order of rotations
+
+        Returns:
+            The constructed quaternion
+        """
+        axes = [x.lower() for x in axes]
+        if (len(values) != 3 or
+                not all(isinstance(x, (int,float)) for x in values)):
+            raise ValueError("You must pass exactly 3 numeric values for values")
+
+        ht = [x/2.0 for x in values]
+        a,x,y,z = 0.0
+        if axes==['x','y','z']:
+            a = (-math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2])+
+                 math.cos(ht[0])*math.cos(ht[1])*math.cos(ht[2]))
+            x = (math.sin(ht[0])*math.cos(ht[1])*math.cos(ht[2])+
+                 math.sin(ht[1])*math.sin(ht[2])*math.cos(ht[0]))
+            y = (-math.sin(ht[0])*math.sin(ht[2])*math.cos(ht[1])+
+                 math.sin(ht[1])*math.cos(ht[0])*math.cos(ht[2]))
+            z = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[3]) +
+                 math.sin(ht[2]) * math.cos(ht[0]) * math.cos(ht[1]))
+        elif axes==['x','z','y']:
+            a = (math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2])+
+                 math.cos(ht[0])*math.cos(ht[1])*math.cos(ht[2]))
+            x = (-math.cos(ht[0])*math.sin(ht[1])*math.sin(ht[2])+
+                 math.sin(ht[0])*math.cos(ht[1])*math.cos(ht[2]))
+            y = (-math.sin(ht[0])*math.sin(ht[1])*math.cos(ht[2])+
+                 math.cos(ht[0])*math.cos(ht[1])*math.sin(ht[2]))
+            z = (math.sin(ht[0])*math.cos(ht[1])*math.sin(ht[2])+
+                 math.cos(ht[0])*math.sin(ht[1])*math.cos(ht[2]))
+        elif axes==['x','y','x']:
+            a = math.cos(ht[1])*math.cos((values[0]+values[2])/2)
+            x = math.cos(ht[1])*math.sin((values[0]+values[2])/2)
+            y = math.sin(ht[1])*math.cos((values[0]-values[2])/2)
+            z = math.sin(ht[1])*math.sin((values[0]-values[2])/2)
+        elif axes == ['x', 'z', 'x']:
+            a = math.cos(ht[1]) * math.cos((values[0] + values[2]) / 2)
+            x = math.cos(ht[1]) * math.sin((values[0] + values[2]) / 2)
+            y = -math.sin(ht[1]) * math.sin((values[0] - values[2]) / 2)
+            z = math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
+        elif axes == ['y', 'x', 'z']:
+            a = (math.sin(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]))
+            x = (math.sin(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]))
+            y = (-math.cos(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]) +
+                 math.sin(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]))
+            z = (-math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]))
+        elif axes == ['y', 'z', 'x']:
+            a = (-math.sin(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]))
+            x = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]))
+            y = (math.sin(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]) +
+                 math.cos(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]))
+            z = (-math.sin(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]))
+        elif axes == ['y', 'x', 'y']:
+            a = math.cos(ht[1]) * math.cos((values[0] + values[2]) / 2)
+            x = math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
+            y = math.cos(ht[1]) * math.sin((values[0] + values[2]) / 2)
+            z = -math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
+        elif axes == ['y', 'z', 'y']:
+            a = math.cos(ht[1]) * math.cos((values[0] + values[2]) / 2)
+            x = math.sin(ht[1]) * math.sin((values[0] - values[2]) / 2)
+            y = math.cos(ht[1]) * math.sin((values[0] + values[2]) / 2)
+            z = math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
+        elif axes == ['z', 'x', 'y']:
+            a = (-math.sin(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]))
+            x = (-math.sin(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]))
+            y = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]))
+            z = (math.sin(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]) +
+                 math.cos(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]))
+        elif axes == ['y', 'y', 'x']:
+            a = (math.sin(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]))
+            x = (-math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]) +
+                 math.cos(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]))
+            y = (math.sin(ht[0]) * math.cos(ht[1]) * math.sin(ht[2]) +
+                 math.cos(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]))
+            z = (-math.cos(ht[0]) * math.sin(ht[1]) * math.sin(ht[2]) +
+                 math.sin(ht[0]) * math.cos(ht[1]) * math.cos(ht[2]))
+        elif axes == ['z', 'x', 'z']:
+            a = math.cos(ht[1]) * math.cos((values[0] + values[2]) / 2)
+            x = math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
+            y = math.sin(ht[1]) * math.sin((values[0] - values[2]) / 2)
+            z = math.cos(ht[1]) * math.sin((values[0] + values[2]) / 2)
+        elif axes == ['z', 'y', 'z']:
+            a = math.cos(ht[1]) * math.cos((values[0] + values[2]) / 2)
+            x = -math.sin(ht[1]) * math.sin((values[0] - values[2]) / 2)
+            y = math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
+            z = math.cos(ht[1]) * math.sin((values[0] + values[2]) / 2)
+        else:
+            raise ValueError("You entered an invalid Euler angle axes sequence")
+
+        return cls(a,x,y,z)
 
     @classmethod
     def from_quaternion(cls, quaternion):
@@ -58,7 +174,7 @@ class Quaternion(object):
         return (self - other).norm()
 
     def unit(self):
-        q/norm(q)
+        return q/norm(q)
 
     def reciprocal(self):
         if q non zero:
