@@ -8,11 +8,12 @@ import math
 
 class Quaternion(object):
 
-    def __init__(self, w, x, y, z):
+    def __init__(self, w, x, y, z, norm_error=0.00000001):
         self.w = w
         self.x = x
         self.y = y
         self.z = z
+        self.norm_error = norm_error
 
     @classmethod
     def from_matrix(cls, matrix):
@@ -230,7 +231,7 @@ class Quaternion(object):
         if isinstance(other, Quaternion):
             return Quaternion((self.w * other.w) - (self.x * other.x) - (self.y * other.y) - (self.z * other.z),
                               (self.w * other.x) + (self.x * other.w) + (self.y * other.z) - (self.z * other.y),
-                              (self.w * other.y) - (self.y * other.z) + (self.y * other.w) + (self.z * other.y),
+                              (self.w * other.y) - (self.x * other.z) + (self.y * other.w) + (self.z * other.x),
                               (self.w * other.z) + (self.x * other.y) - (self.y * other.x) + (self.z * other.w))
         elif isinstance(other,(int, float)):
             return Quaternion(self.w * other, self.x * other, self.y * other, self.z * other)
@@ -316,6 +317,8 @@ class Quaternion(object):
         Returns:
             The multiplicative inverse of the quaternion
         """
+        if abs(self.norm()-1) > self.norm_error:
+            raise ValueError("The quaternion must be normalized")
         if self:
             return self.conjugate()/self.norm()
         else:
@@ -347,3 +350,41 @@ class Quaternion(object):
             True if the quaternion is non-zero, false otherwise
         """
         return any([self.w, self.x, self.y, self.z])
+
+    def __eq__(self, other):
+        """Test if two quaternions are equal
+
+        Args:
+            other (Quaternion): The quaternion with which to compare equality
+
+        Returns:
+            true if the quaternions are equal. False otherwise
+        """
+        if not isinstance(other, Quaternion):
+            raise ValueError("Must pass in another Quaternion")
+        return (self.w == other.w and self.x == other.x and
+                self.y == other.y and self.z == other.z)
+
+    def __str__(self):
+        """Return a string representation of the quaternion in form: <w, x, y, z>
+
+        Returns:
+            A string representation of the quaternion
+        """
+        return ("<" + str(self.w) + ", " + str(self.x) + ", " + str(self.y) +
+                ", " + str(self.z) + ">")
+
+    def almost_equal(self,other, delta=.00000001):
+        """Determines whether a quaternion is approximately equal to another
+        using a naive comparison of the 4 values w, x, y, z
+
+        Args:
+            other:
+            delta:
+
+        Returns:
+
+        """
+        result = self-other
+        return (abs(result.w)<delta and abs(result.x)<delta and
+                abs(result.y)<delta and  abs(result.z)<delta)
