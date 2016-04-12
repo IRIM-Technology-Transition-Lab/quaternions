@@ -1,7 +1,7 @@
 """
 A module to hold and work with Quaternions
 
-Copyright (c) 2016 Michael Sobrepera
+Copyright (c) 2016 GTRC
 """
 
 import math
@@ -247,26 +247,24 @@ class Quaternion(object):
     # Test: q=(q*)*
     # Test: (pq)* = q*p*
 
-    def magnitude(self):
-        """Return the magnitude of the quaternion
+    def norm(self):
+        """Return the norm of the quaternion
 
         Returns:
-            The magnitude of the quaternion
+            The norm of the quaternion
         """
         return math.sqrt(math.pow(self.w, 2) + math.pow(self.x, 2) + math.pow(self.y, 2) + math.pow(self.z, 2))
+    # Test: norm(conjugate(q))=norm(q)
+    # Test: norm(pq) = norm(p)norm(q)
 
-    def norm(self):
+    def unit(self):
         """
-        Return Quaternion normalized
+        Return the unit Quaternion
         Returns:
-            Normalized quaternion
+            Unit quaternion
         """
-        mag = self.magnitude()
-        return Quaternion(self.w/mag, self.x/mag, self.y/mag, self.z/mag)
-    # Test: norm(x) = sqrt(x x*) = sqrt(x* x) > 0 & Real
-    # Test: norm(w q) = abs(real) norm(q) given w is scalar
-    # Test: norm(p q) = norm(p) norm(q)
-    # Test: norm(p + w p1 + q + aq1) - (p+q)) = w norm(p1 + q1) given w is scalar
+        return self/self.norm()
+
 
     def __sub__(self, other):
         """Subtract the argument from the caller
@@ -280,6 +278,21 @@ class Quaternion(object):
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
         return Quaternion(self.w - other.w, self.x - other.x, self.y - other.y, self.z - other.z)
+
+    def __div__(self, other):
+        """
+        Divide a quaternion by a scalar value.
+
+        Args:
+            other (number): The number to divide by
+
+        Returns:
+            The result of division
+        """
+        if isinstance(other,(int, float)):
+            return Quaternion(self.w / other, self.x / other, self.y / other, self.z / other)
+        else:
+            return NotImplemented
 
     def distance(self, other):
         """
@@ -295,15 +308,42 @@ class Quaternion(object):
             raise ValueError("Must pass in another Quaternion")
         return (self - other).norm()
 
-    def unit(self):
-        return self/norm(self)
+    def inverse(self):
+        """Return the inverse of the quaternion. Specifically, this is the
+        multiplicative inverse, such that multiplying the inverse of q by q
+        yields the multiplicative identity.
 
-    def reciprocal(self):
-        if q non zero:
-            q*/(norm(x)^2)
-    # Test: recip(q) q = 1 & q recip(q) = 1
-
-    def compose(self, other):
+        Returns:
+            The multiplicative inverse of the quaternion
+        """
+        if self:
+            return self.conjugate()/self.norm()
+        else:
+            raise ZeroDivisionError("The quaternion has no non-zero values")
+    # Test: inverse(q) q = Quaternion(1,0,0,0)
+    # Test: q inverse(q) = Quaternion(1,0,0,0)
+    # Test: q inverse(q) = inverse(q) q
+    # Test: inverse(inverse(p))=p
+    # Test: inverse(pq) = inverse(q)inverse(p)
 
     def dot(self, other):
-        return (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
+        """
+        Return the quaternion dot product
+
+        Args:
+            other (Quaternion): Quaternion with which to calculate the dot product
+
+        Returns:
+            The dot product of the two quaternions
+        """
+        if not isinstance(other, Quaternion):
+            raise ValueError("Must pass in another Quaternion")
+        return (self.w * other.w) + (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
+
+    def __nonzero__(self):
+        """Determines whether the quaternion is non-zero
+
+        Returns:
+            True if the quaternion is non-zero, false otherwise
+        """
+        return any([self.w, self.x, self.y, self.z])
