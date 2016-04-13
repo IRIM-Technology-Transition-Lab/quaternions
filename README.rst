@@ -5,6 +5,9 @@ python_quaternions
     :target: http://quaternions.readthedocs.org/en/latest/?badge=latest
     :alt: Documentation Status
 
+.. image:: https://travis-ci.org/IRIM-Technology-Transition-Lab/quaternions.svg?branch=master
+    :target: https://travis-ci.org/IRIM-Technology-Transition-Lab/quaternions
+
 A library to handle quaternions. The library is partly tested (see tests). It
 would be great to get everything (edge cases and functions) under testing.
 
