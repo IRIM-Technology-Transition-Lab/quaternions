@@ -11,6 +11,7 @@ python:
 # command to install dependencies
 install:
   - pip install .
+  - pip install pep8
 # command to run tests
 script:
     - pep8 quaternion.py
