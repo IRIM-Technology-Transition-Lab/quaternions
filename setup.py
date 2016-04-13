@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def readme():
@@ -22,7 +22,7 @@ setup(name='quaternions',
       author='Michael Sobrepera',
       author_email='mjsobrep@live.com',
       license='Copyright (c) 2016 GTRC',
-      packages=['quaternion'],
+      packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
       install_requires=[],
       include_package_data=True,
       zip_safe=False,
