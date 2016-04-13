@@ -1,6 +1,10 @@
 python_quaternions
 ==================
 
+.. image:: https://readthedocs.org/projects/quaternions/badge/?version=latest
+:target: http://quaternions.readthedocs.org/en/latest/?badge=latest
+:alt: Documentation Status
+
 A library to handle quaternions. The library is partly tested (see tests). It
 would be great to get everything (edge cases and functions) under testing.
 
