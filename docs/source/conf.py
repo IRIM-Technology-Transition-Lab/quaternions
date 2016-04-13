@@ -15,7 +15,7 @@
 import sys
 import os
 
-os.system("sphinx-apidoc -f -o ../build/modules ../../quaternion")
+os.system("sphinx-apidoc -f -o ./_modules ../../quaternion")
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
