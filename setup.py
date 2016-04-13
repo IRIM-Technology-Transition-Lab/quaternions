@@ -5,7 +5,7 @@ def readme():
     with open('README.rst') as f:
         return f.read()
 
-setup(name='quaternion',
+setup(name='quaternions',
       version='0.1',
       description='A package to handle quaternions',
       long_description=readme(),
@@ -18,7 +18,7 @@ setup(name='quaternion',
         'Programming Language :: Python',
       ],
       keywords='quaternion transformations',
-      url='https://github.com/mjsobrep/python_quaternions',
+      url='https://github.com/IRIM-Technology-Transition-Lab/quaternions',
       author='Michael Sobrepera',
       author_email='mjsobrep@live.com',
       license='Copyright (c) 2016 GTRC',
