@@ -13,8 +13,8 @@ A module to hold and work with Quaternions
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -25,6 +25,7 @@ A module to hold and work with Quaternions
 # SOFTWARE.
 
 import math
+
 
 class Quaternion(object):
 
@@ -46,55 +47,60 @@ class Quaternion(object):
             The constructed quaternion
         """
         if not isinstance(matrix, list) and all(isinstance(sub, list) and all(
-            isinstance(val, (int, float)) for val in sub) for sub in matrix):
-            raise ValueError("input must be a list of 3 3 member lists of numbers")
+                isinstance(val, (int, float)) for val in sub)
+                for sub in matrix):
+            raise ValueError(
+                "input must be a list of 3 3 member lists of numbers")
         w = math.sqrt(1+matrix[0][0]+matrix[1][1]+matrix[2][2])/2
         x = (matrix[2][1]-matrix[1][2])/(4*w)
         y = (matrix[0][2]-matrix[2][0])/(4*w)
         z = (matrix[1][0]-matrix[0][1])/(4*w)
 
-        return cls(w,x,y,z)
+        return cls(w, x, y, z)
 
     @classmethod
-    def from_euler(cls, values, axes=['x','y','z']):
+    def from_euler(cls, values, axes=['x', 'y', 'z']):
         """
         Constructs w quaternion using w 3 member list of Euler angles, along
         with w list defining their rotation sequence.
-        Based off of this: http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
+        Based off of this:
+        http://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/19770024290.pdf
 
         Args:
             values (list of numbers): 3 member list giving the rotations of the
                                       Euler angles in **radians**
-            axes (list of chars): 3 member list specifying the order of rotations
+            axes (list of chars): 3 member list specifying the order of
+                                  rotations
 
         Returns:
             The constructed quaternion
         """
         axes = [x.lower() for x in axes]
         if (len(values) != 3 or
-                not all(isinstance(x, (int,float)) for x in values)):
-            raise ValueError("You must pass exactly 3 numeric values for values")
+                not all(isinstance(x, (int, float)) for x in values)):
+            raise ValueError(
+                "You must pass exactly 3 numeric values for values")
 
         ht = [x/2.0 for x in values]
-        if axes==['x','y','z']:
-            w = (-math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2])+
+        if axes == ['x', 'y', 'z']:
+            w = (-math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2]) +
                  math.cos(ht[0])*math.cos(ht[1])*math.cos(ht[2]))
-            x = (math.sin(ht[0])*math.cos(ht[1])*math.cos(ht[2])+
+            x = (math.sin(ht[0])*math.cos(ht[1])*math.cos(ht[2]) +
                  math.sin(ht[1])*math.sin(ht[2])*math.cos(ht[0]))
-            y = (-math.sin(ht[0])*math.sin(ht[2])*math.cos(ht[1])+
+            y = (-math.sin(ht[0])*math.sin(ht[2])*math.cos(ht[1]) +
                  math.sin(ht[1])*math.cos(ht[0])*math.cos(ht[2]))
             z = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[3]) +
                  math.sin(ht[2]) * math.cos(ht[0]) * math.cos(ht[1]))
-        elif axes==['x','z','y']:
-            w = (math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2])+
+        elif axes == ['x', 'z', 'y']:
+            w = (math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2]) +
                  math.cos(ht[0])*math.cos(ht[1])*math.cos(ht[2]))
-            x = (-math.cos(ht[0])*math.sin(ht[1])*math.sin(ht[2])+
+            x = (-math.cos(ht[0])*math.sin(ht[1])*math.sin(ht[2]) +
                  math.sin(ht[0])*math.cos(ht[1])*math.cos(ht[2]))
-            y = (-math.sin(ht[0])*math.sin(ht[1])*math.cos(ht[2])+
+            y = (-math.sin(ht[0])*math.sin(ht[1])*math.cos(ht[2]) +
                  math.cos(ht[0])*math.cos(ht[1])*math.sin(ht[2]))
-            z = (math.sin(ht[0])*math.cos(ht[1])*math.sin(ht[2])+
+            z = (math.sin(ht[0])*math.cos(ht[1])*math.sin(ht[2]) +
                  math.cos(ht[0])*math.sin(ht[1])*math.cos(ht[2]))
-        elif axes==['x','y','x']:
+        elif axes == ['x', 'y', 'x']:
             w = math.cos(ht[1])*math.cos((values[0]+values[2])/2)
             x = math.cos(ht[1])*math.sin((values[0]+values[2])/2)
             y = math.sin(ht[1])*math.cos((values[0]-values[2])/2)
@@ -161,9 +167,10 @@ class Quaternion(object):
             y = math.sin(ht[1]) * math.cos((values[0] - values[2]) / 2)
             z = math.cos(ht[1]) * math.sin((values[0] + values[2]) / 2)
         else:
-            raise ValueError("You entered an invalid Euler angle axes sequence")
+            raise ValueError(
+                "You entered an invalid Euler angle axes sequence")
 
-        return cls(w,x,y,z)
+        return cls(w, x, y, z)
 
     @classmethod
     def from_quaternion(cls, quaternion):
@@ -196,7 +203,7 @@ class Quaternion(object):
                 not all(isinstance(x, (int, float)) for x in translation)):
             raise ValueError(
                 "You must pass exactly 3 numeric values for the translation")
-        return cls(0,translation[0]/2, translation[1]/2, translation[2]/2)
+        return cls(0, translation[0]/2, translation[1]/2, translation[2]/2)
 
     @classmethod
     def from_axis_angle(cls, axis, angle):
@@ -215,7 +222,7 @@ class Quaternion(object):
                 not all(isinstance(x, (int, float)) for x in axis)):
             raise ValueError(
                 "You must pass exactly 3 numeric values for the axis")
-        if not isinstance(angle, (int,float)):
+        if not isinstance(angle, (int, float)):
             raise ValueError("The angle value must be a single numeric value")
         sin_result = math.sin(angle/2)
         return cls(math.cos(angle/2), axis[0]*sin_result, axis[1]*sin_result,
@@ -242,19 +249,24 @@ class Quaternion(object):
 
         Args:
             other (Quaternion): The quaternion to multiply by. The caller will
-                                be on the left side and the callee argument will
-                                be on the right side
+                                be on the left side and the callee argument
+                                will be on the right side
 
         Returns:
             The result of the multiplication.
         """
         if isinstance(other, Quaternion):
-            return Quaternion((self.w * other.w) - (self.x * other.x) - (self.y * other.y) - (self.z * other.z),
-                              (self.w * other.x) + (self.x * other.w) + (self.y * other.z) - (self.z * other.y),
-                              (self.w * other.y) - (self.x * other.z) + (self.y * other.w) + (self.z * other.x),
-                              (self.w * other.z) + (self.x * other.y) - (self.y * other.x) + (self.z * other.w))
-        elif isinstance(other,(int, float)):
-            return Quaternion(self.w * other, self.x * other, self.y * other, self.z * other)
+            return Quaternion((self.w * other.w) - (self.x * other.x) -
+                              (self.y * other.y) - (self.z * other.z),
+                              (self.w * other.x) + (self.x * other.w) +
+                              (self.y * other.z) - (self.z * other.y),
+                              (self.w * other.y) - (self.x * other.z) +
+                              (self.y * other.w) + (self.z * other.x),
+                              (self.w * other.z) + (self.x * other.y) -
+                              (self.y * other.x) + (self.z * other.w))
+        elif isinstance(other, (int, float)):
+            return Quaternion(self.w * other, self.x * other, self.y * other,
+                              self.z * other)
         else:
             return NotImplemented
 
@@ -274,7 +286,8 @@ class Quaternion(object):
         Returns:
             The norm of the quaternion
         """
-        return math.sqrt(math.pow(self.w, 2) + math.pow(self.x, 2) + math.pow(self.y, 2) + math.pow(self.z, 2))
+        return math.sqrt(math.pow(self.w, 2) + math.pow(self.x, 2) +
+                         math.pow(self.y, 2) + math.pow(self.z, 2))
     # Test: norm(conjugate(q))=norm(q)
     # Test: norm(pq) = norm(p)norm(q)
 
@@ -285,7 +298,6 @@ class Quaternion(object):
             Unit quaternion
         """
         return self/self.norm()
-
 
     def __sub__(self, other):
         """Subtract the argument from the caller
@@ -298,7 +310,8 @@ class Quaternion(object):
         """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
-        return Quaternion(self.w - other.w, self.x - other.x, self.y - other.y, self.z - other.z)
+        return Quaternion(self.w - other.w, self.x - other.x,
+                          self.y - other.y, self.z - other.z)
 
     def __div__(self, other):
         """
@@ -310,8 +323,9 @@ class Quaternion(object):
         Returns:
             The result of division
         """
-        if isinstance(other,(int, float)):
-            return Quaternion(self.w / other, self.x / other, self.y / other, self.z / other)
+        if isinstance(other, (int, float)):
+            return Quaternion(self.w / other, self.x / other,
+                              self.y / other, self.z / other)
         else:
             return NotImplemented
 
@@ -356,14 +370,16 @@ class Quaternion(object):
         Return the quaternion dot product
 
         Args:
-            other (Quaternion): Quaternion with which to calculate the dot product
+            other (Quaternion): Quaternion with which to calculate the dot
+                                product
 
         Returns:
             The dot product of the two quaternions
         """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
-        return (self.w * other.w) + (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
+        return ((self.w * other.w) + (self.x * other.x) + (self.y * other.y) +
+                (self.z * other.z))
 
     def __nonzero__(self):
         """Determines whether the quaternion is non-zero
@@ -396,7 +412,7 @@ class Quaternion(object):
         return ("<" + str(self.w) + ", " + str(self.x) + ", " + str(self.y) +
                 ", " + str(self.z) + ">")
 
-    def almost_equal(self,other, delta=.00000001):
+    def almost_equal(self, other, delta=.00000001):
         """Determines whether a quaternion is approximately equal to another
         using a naive comparison of the 4 values w, x, y, z
 
@@ -408,5 +424,5 @@ class Quaternion(object):
 
         """
         result = self-other
-        return (abs(result.w)<delta and abs(result.x)<delta and
-                abs(result.y)<delta and  abs(result.z)<delta)
+        return (abs(result.w) < delta and abs(result.x) < delta and
+                abs(result.y) < delta and abs(result.z) < delta)
