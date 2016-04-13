@@ -315,6 +315,8 @@ class Quaternion(object):
         else:
             return NotImplemented
 
+    __truediv__ = __div__
+
     def distance(self, other):
         """
         Return the rotational distance between two quaternions.
