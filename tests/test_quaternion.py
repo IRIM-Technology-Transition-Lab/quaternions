@@ -36,17 +36,17 @@ class TestQuaternion(TestCase):
     def setUp(self):
         random = Random(100)
         N = 50*4
-        int_vals = [random.randint(-1000,1000) for _ in range(N/2)]
-        float_vals = [random.uniform(-1000, 1000) for _ in range(N / 2)]
+        int_vals = [random.randint(-1000,1000) for _ in range(int(N/2))]
+        float_vals = [random.uniform(-1000, 1000) for _ in range(int(N / 2))]
         val_list = int_vals + float_vals
         random.shuffle(val_list)
         # val_list = \
         #     [0, 0, 0, 0, 1, 0, 0, 0, 0, 2, 3, 4.5, 1.5, 2.5, 0, 9.7] + val_list
         self.p = [Quaternion(val_list[4*n], val_list[4*n+1], val_list[4*n+2],
-                             val_list[4*n+3], ) for n in range(N/8)]
+                             val_list[4*n+3], ) for n in range(int(N/8))]
         self.p = [p.unit() for p in self.p]
         self.q = [Quaternion(val_list[4*n], val_list[4*n+1], val_list[4*n+2],
-                             val_list[4*n+3], ) for n in range(N/8, N/4)]
+                             val_list[4*n+3], ) for n in range(int(N/8), int(N/4))]
         self.q = [q.unit() for q in self.q]
 
         self.all = self.p + self.q
