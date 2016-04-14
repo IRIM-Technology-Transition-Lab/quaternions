@@ -24,7 +24,7 @@ Tests for quaternion class
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+from __future__ import division
 from unittest import TestCase
 from quaternions import Quaternion
 from random import Random
