@@ -26,5 +26,5 @@ setup(name='quaternions',
       install_requires=[],
       include_package_data=True,
       zip_safe=False,
-      test_suite="quaternion.tests"
+      test_suite="tests"
       )

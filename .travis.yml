@@ -16,4 +16,4 @@ install:
 script:
     - pep8 quaternions/quaternion.py
     - pep8 tests/test_quaternion.py
-    - python -m unittest
+    - python setup.py test
