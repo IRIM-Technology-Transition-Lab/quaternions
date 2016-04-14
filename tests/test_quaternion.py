@@ -26,7 +26,7 @@ Tests for quaternion class
 
 
 from unittest import TestCase
-from quaternion import Quaternion
+from quaternions import Quaternion
 from random import Random
 
 

@@ -192,9 +192,10 @@ class Quaternion(object):
         """
         Generates a quaternion from a translation. Meant to be used along with
         the dual operator to generate dual quaternions
+
         Args:
             translation: A list of three numbers representing the (x,y,z)
-                         translation
+            translation
 
         Returns:
             The quaternion created from the translation

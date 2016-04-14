@@ -8,6 +8,9 @@ python_quaternions
 .. image:: https://travis-ci.org/IRIM-Technology-Transition-Lab/quaternions.svg?branch=master
     :target: https://travis-ci.org/IRIM-Technology-Transition-Lab/quaternions
 
+.. image:: https://img.shields.io/pypi/v/quaternions.svg
+    :target: https://pypi.python.org/pypi/quaternions
+
 A library to handle quaternions. The library is partly tested (see tests). It
 would be great to get everything (edge cases and functions) under testing.
 
