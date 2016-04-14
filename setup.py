@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='quaternions',
-      version='0.1',
+      version='0.2',
       description='A package to handle quaternions',
       long_description=readme(),
       classifiers=[
