@@ -24,9 +24,9 @@ Tests for quaternion class
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
+from __future__ import division
 from unittest import TestCase
-from quaternion import Quaternion
+from quaternions import Quaternion
 from random import Random
 
 
@@ -34,16 +34,16 @@ class TestQuaternion(TestCase):
     def setUp(self):
         random = Random(100)
         N = 50*4
-        int_vals = [random.randint(-1000, 1000) for _ in range(int(N/2))]
-        float_vals = [random.uniform(-1000, 1000) for _ in range(int(N / 2))]
+        int_vals = [random.randint(-1000, 1000) for _ in range(N//2)]
+        float_vals = [random.uniform(-1000, 1000) for _ in range(N // 2)]
         val_list = int_vals + float_vals
         random.shuffle(val_list)
         self.p = [Quaternion(val_list[4*n], val_list[4*n+1], val_list[4*n+2],
-                             val_list[4*n+3], ) for n in range(int(N/8))]
+                             val_list[4*n+3], ) for n in range(N//8)]
         self.p = [p.unit() for p in self.p]
         self.q = [Quaternion(val_list[4*n], val_list[4*n+1], val_list[4*n+2],
                              val_list[4*n+3])
-                  for n in range(int(N/8), int(N/4))]
+                  for n in range(N//8, N//4)]
         self.q = [q.unit() for q in self.q]
 
         self.all = self.p + self.q

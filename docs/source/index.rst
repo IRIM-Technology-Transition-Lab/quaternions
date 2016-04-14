@@ -5,16 +5,10 @@
 
 .. include:: ../../README.rst
 
-Contents:
+API:
+====
 
 .. toctree::
    :maxdepth: 2
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   _modules/modules
