@@ -406,7 +406,8 @@ class Quaternion(object):
                 self.y == other.y and self.z == other.z)
 
     def __str__(self):
-        """Return a string representation of the quaternion in form: <w, x, y, z>
+        """Return a string representation of the quaternion in form:
+        <w, x, y, z>
 
         Returns:
             A string representation of the quaternion
@@ -433,19 +434,19 @@ class Quaternion(object):
         """Return the rotation matrix which this quaternion is equivalent to
 
         Returns:
-            The rotation matrix which this quaternion is equivalent to as a list
-            of three lists of three elements each
+            The rotation matrix which this quaternion is equivalent to as a
+            list of three lists of three elements each
         """
         rot_matx = [[0]*3]*3
         rot_matx[0][0] = (math.pow(self.w, 2) + math.pow(self.x, 2) -
-                          math.pow(self.y, 2) - math.pow(self.z,2))
+                          math.pow(self.y, 2) - math.pow(self.z, 2))
         rot_matx[0][1] = (2*self.x*self.y - 2*self.w*self.z)
         rot_matx[0][2] = (2*self.x*self.z + 2*self.w*self.y)
         rot_matx[1][0] = (2*self.x*self.y + 2*self.w*self.z)
-        rot_matx[1][1] = (math.pow(self.w,2)-math.pow(self.x,2)+
-                          math.pow(self.y,2)-math.pow(self.z,2))
-        rot_matx[1][2] = (2*self.y*self.z-2*self.w*self.x)
-        rot_matx[2][0] = (2*self.x*self.z-2*self.w*self.y)
-        rot_matx[2][1] = (2*self.y*self.z+2*self.w*self.x)
-        rot_matx[2][2] = (math.pow(self.w,2)-math.pow(self.x,2)-
-                          math.pow(self.y,2)+math.pow(self.z,2))
+        rot_matx[1][1] = (math.pow(self.w, 2) - math.pow(self.x, 2) +
+                          math.pow(self.y, 2) - math.pow(self.z, 2))
+        rot_matx[1][2] = (2*self.y*self.z - 2*self.w*self.x)
+        rot_matx[2][0] = (2*self.x*self.z - 2*self.w*self.y)
+        rot_matx[2][1] = (2*self.y*self.z + 2*self.w*self.x)
+        rot_matx[2][2] = (math.pow(self.w, 2) - math.pow(self.x, 2) -
+                          math.pow(self.y, 2) + math.pow(self.z, 2))
