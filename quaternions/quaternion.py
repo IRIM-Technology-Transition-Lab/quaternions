@@ -29,8 +29,29 @@ import math
 
 
 class Quaternion(object):
+    """ A class to hold and work with quaternions
+
+    Attributes:
+        w:  The real component of the quaternion
+        x:  The i component of the quaternion
+        y:  The y component of the quaternion
+        z:  The z component of the quaternion
+        norm_error: The maximum deviation from magnitude 1 for which a
+                    quaternion will be considered normalized
+    """
 
     def __init__(self, w, x, y, z, norm_error=0.00000001):
+        """ Constructs a quaternion from individual components
+
+        Args:
+            w (int,float): The real component of the quaternion
+            x (int,float): The i component of the quaternion
+            y (int,float): The j component of the quaternion
+            z (int,float): The k component of the quaternion
+            norm_error (float): The maximum deviation from magnitude 1 for
+                                which a quaternion will be considered
+                                normalized
+        """
         self.w = w
         self.x = x
         self.y = y
@@ -279,8 +300,6 @@ class Quaternion(object):
             The conjugate of the quaternion
         """
         return Quaternion(self.w, -self.x, -self.y, -self.z)
-    # Test: q=(q*)*
-    # Test: (pq)* = q*p*
 
     def norm(self):
         """Return the norm of the quaternion
@@ -290,12 +309,11 @@ class Quaternion(object):
         """
         return math.sqrt(math.pow(self.w, 2) + math.pow(self.x, 2) +
                          math.pow(self.y, 2) + math.pow(self.z, 2))
-    # Test: norm(conjugate(q))=norm(q)
-    # Test: norm(pq) = norm(p)norm(q)
 
     def unit(self):
         """
         Return the unit Quaternion
+
         Returns:
             Unit quaternion
         """
@@ -341,7 +359,7 @@ class Quaternion(object):
             other (Quaternion): The other
 
         Returns:
-
+            The angular distance between two quaternions
         """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
@@ -361,11 +379,6 @@ class Quaternion(object):
             return self.conjugate()/self.norm()
         else:
             raise ZeroDivisionError("The quaternion has no non-zero values")
-    # Test: inverse(q) q = Quaternion(1,0,0,0)
-    # Test: q inverse(q) = Quaternion(1,0,0,0)
-    # Test: q inverse(q) = inverse(q) q
-    # Test: inverse(inverse(p))=p
-    # Test: inverse(pq) = inverse(q)inverse(p)
 
     def dot(self, other):
         """
@@ -420,8 +433,9 @@ class Quaternion(object):
         using a naive comparison of the 4 values w, x, y, z
 
         Args:
-            other:
-            delta:
+            other (Quaternion): The quaternion with which to test equality
+            delta (float): The error range in which to define two quaternions
+                           equal
 
         Returns:
 
