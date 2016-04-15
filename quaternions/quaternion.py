@@ -111,7 +111,7 @@ class Quaternion(object):
                  math.sin(ht[1])*math.sin(ht[2])*math.cos(ht[0]))
             y = (-math.sin(ht[0])*math.sin(ht[2])*math.cos(ht[1]) +
                  math.sin(ht[1])*math.cos(ht[0])*math.cos(ht[2]))
-            z = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[3]) +
+            z = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]) +
                  math.sin(ht[2]) * math.cos(ht[0]) * math.cos(ht[1]))
         elif axes == ['x', 'z', 'y']:
             w = (math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2]) +
