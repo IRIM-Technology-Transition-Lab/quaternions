@@ -464,3 +464,11 @@ class Quaternion(object):
         rot_matx[2][1] = (2*self.y*self.z + 2*self.w*self.x)
         rot_matx[2][2] = (math.pow(self.w, 2) - math.pow(self.x, 2) -
                           math.pow(self.y, 2) + math.pow(self.z, 2))
+
+    def __neg__(self):
+        """ Negate the quaternion
+
+        Returns:
+            The negated form of the quaternion
+        """
+        return Quaternion(-self.w, -self.x, -self.y, -self.z)
