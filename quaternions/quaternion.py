@@ -534,3 +534,19 @@ class Quaternion(object):
 
     def get_xyz_vector(self):
         return [self.x, self.y, self.z]
+
+    @staticmethod
+    def average(quats, init, threshold=0.01):
+        qt_bar = init
+        dist = 5
+        while dist>threshold:
+            error = [0,0,0]
+            for element in quats:
+                addition = (element*(qt_bar.inverse())).get_rotation_vector()
+                error = [error[idx]+addition[idx] for idx in range(3)] # TODO: take to axis angle for averaging then back to quaternion
+            error = [element/len(quats) for element in error]
+            error = Quaternion.from_rotation_vector(error)
+            qt_bar_new = error*qt_bar
+            dist = qt_bar.distance(qt_bar_new)
+            qt_bar = qt_bar_new
+        return qt_bar
