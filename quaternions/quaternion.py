@@ -471,7 +471,7 @@ class Quaternion(object):
             The rotation matrix which this quaternion is equivalent to as a
             list of three lists of three elements each
         """
-        rot_matx = [[0]*3]*3
+        rot_matx = [[0,0,0],[0,0,0],[0,0,0]]
         rot_matx[0][0] = (math.pow(self.w, 2) + math.pow(self.x, 2) -
                           math.pow(self.y, 2) - math.pow(self.z, 2))
         rot_matx[0][1] = (2*self.x*self.y - 2*self.w*self.z)
@@ -484,6 +484,7 @@ class Quaternion(object):
         rot_matx[2][1] = (2*self.y*self.z + 2*self.w*self.x)
         rot_matx[2][2] = (math.pow(self.w, 2) - math.pow(self.x, 2) -
                           math.pow(self.y, 2) + math.pow(self.z, 2))
+        return rot_matx
 
     def __neg__(self):
         """ Negate the quaternion
