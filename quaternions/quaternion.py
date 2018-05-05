@@ -522,3 +522,15 @@ class Quaternion(object):
         Z = math.atan2(t3, t4)
 
         return [X, Y, Z]
+
+    def get_rotation_vector(self):
+        angle = math.acos(self.w)*2
+        if angle == 0:
+            return [0,0,0]
+        x = angle * self.x/math.sin(angle/2)
+        y = angle * self.y/math.sin(angle/2)
+        z = angle * self.z/math.sin(angle/2)
+        return [x,y,z]
+
+    def get_xyz_vector(self):
+        return [self.x, self.y, self.z]
