@@ -1,36 +1,36 @@
 """
 A module to hold and work with Quaternions
+Repo at: https://github.com/mjsobrep/quaternions
 """
-
-# The MIT License (MIT)
-#
-# Copyright (c) 2016 GTRC.
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
 
 from __future__ import division
 import math
 
 
 class Quaternion(object):
+    """ A class to hold and work with quaternions
+
+    Attributes:
+        w:  The real component of the quaternion
+        x:  The i component of the quaternion
+        y:  The y component of the quaternion
+        z:  The z component of the quaternion
+        norm_error: The maximum deviation from magnitude 1 for which a
+                    quaternion will be considered normalized
+    """
 
     def __init__(self, w, x, y, z, norm_error=0.00000001):
+        """ Constructs a quaternion from individual components
+
+        Args:
+            w (int,float): The real component of the quaternion
+            x (int,float): The i component of the quaternion
+            y (int,float): The j component of the quaternion
+            z (int,float): The k component of the quaternion
+            norm_error (float): The maximum deviation from magnitude 1 for
+                                which a quaternion will be considered
+                                normalized
+        """
         self.w = w
         self.x = x
         self.y = y
@@ -90,7 +90,7 @@ class Quaternion(object):
                  math.sin(ht[1])*math.sin(ht[2])*math.cos(ht[0]))
             y = (-math.sin(ht[0])*math.sin(ht[2])*math.cos(ht[1]) +
                  math.sin(ht[1])*math.cos(ht[0])*math.cos(ht[2]))
-            z = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[3]) +
+            z = (math.sin(ht[0]) * math.sin(ht[1]) * math.cos(ht[2]) +
                  math.sin(ht[2]) * math.cos(ht[0]) * math.cos(ht[1]))
         elif axes == ['x', 'z', 'y']:
             w = (math.sin(ht[0])*math.sin(ht[1])*math.sin(ht[2]) +
@@ -230,6 +230,25 @@ class Quaternion(object):
         return cls(math.cos(angle/2), axis[0]*sin_result, axis[1]*sin_result,
                    axis[2]*sin_result)
 
+    @classmethod
+    def from_rotation_vector(cls, vect):
+        """
+        Constructs a quaternion from a rotation vector.
+
+        Args:
+            vect: A rotation vector with angle as the magnitude and vector for
+                  the vector.
+
+        Returns:
+            The constructed quaternion
+        """
+        angle = math.sqrt(sum(element**2 for element in vect))
+        if angle == 0:
+            axis = [1, 0, 0]
+        else:
+            axis = [element/angle for element in vect]
+        return cls.from_axis_angle(axis, angle)
+
     def __add__(self, other):
         """
         Add together two quaternions.
@@ -279,8 +298,6 @@ class Quaternion(object):
             The conjugate of the quaternion
         """
         return Quaternion(self.w, -self.x, -self.y, -self.z)
-    # Test: q=(q*)*
-    # Test: (pq)* = q*p*
 
     def norm(self):
         """Return the norm of the quaternion
@@ -290,12 +307,11 @@ class Quaternion(object):
         """
         return math.sqrt(math.pow(self.w, 2) + math.pow(self.x, 2) +
                          math.pow(self.y, 2) + math.pow(self.z, 2))
-    # Test: norm(conjugate(q))=norm(q)
-    # Test: norm(pq) = norm(p)norm(q)
 
     def unit(self):
         """
         Return the unit Quaternion
+
         Returns:
             Unit quaternion
         """
@@ -341,7 +357,7 @@ class Quaternion(object):
             other (Quaternion): The other
 
         Returns:
-
+            The angular distance between two quaternions
         """
         if not isinstance(other, Quaternion):
             raise ValueError("Must pass in another Quaternion")
@@ -361,11 +377,6 @@ class Quaternion(object):
             return self.conjugate()/self.norm()
         else:
             raise ZeroDivisionError("The quaternion has no non-zero values")
-    # Test: inverse(q) q = Quaternion(1,0,0,0)
-    # Test: q inverse(q) = Quaternion(1,0,0,0)
-    # Test: q inverse(q) = inverse(q) q
-    # Test: inverse(inverse(p))=p
-    # Test: inverse(pq) = inverse(q)inverse(p)
 
     def dot(self, other):
         """
@@ -406,7 +417,8 @@ class Quaternion(object):
                 self.y == other.y and self.z == other.z)
 
     def __str__(self):
-        """Return a string representation of the quaternion in form: <w, x, y, z>
+        """Return a string representation of the quaternion in form:
+        <w, x, y, z>
 
         Returns:
             A string representation of the quaternion
@@ -419,8 +431,9 @@ class Quaternion(object):
         using a naive comparison of the 4 values w, x, y, z
 
         Args:
-            other:
-            delta:
+            other (Quaternion): The quaternion with which to test equality
+            delta (float): The error range in which to define two quaternions
+                           equal
 
         Returns:
 
@@ -428,3 +441,103 @@ class Quaternion(object):
         result = self-other
         return (abs(result.w) < delta and abs(result.x) < delta and
                 abs(result.y) < delta and abs(result.z) < delta)
+
+    def get_rotation_matrix(self):
+        """Return the rotation matrix which this quaternion is equivalent to
+
+        Returns:
+            The rotation matrix which this quaternion is equivalent to as a
+            list of three lists of three elements each
+        """
+        rot_matx = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        rot_matx[0][0] = (math.pow(self.w, 2) + math.pow(self.x, 2) -
+                          math.pow(self.y, 2) - math.pow(self.z, 2))
+        rot_matx[0][1] = (2*self.x*self.y - 2*self.w*self.z)
+        rot_matx[0][2] = (2*self.x*self.z + 2*self.w*self.y)
+        rot_matx[1][0] = (2*self.x*self.y + 2*self.w*self.z)
+        rot_matx[1][1] = (math.pow(self.w, 2) - math.pow(self.x, 2) +
+                          math.pow(self.y, 2) - math.pow(self.z, 2))
+        rot_matx[1][2] = (2*self.y*self.z - 2*self.w*self.x)
+        rot_matx[2][0] = (2*self.x*self.z - 2*self.w*self.y)
+        rot_matx[2][1] = (2*self.y*self.z + 2*self.w*self.x)
+        rot_matx[2][2] = (math.pow(self.w, 2) - math.pow(self.x, 2) -
+                          math.pow(self.y, 2) + math.pow(self.z, 2))
+        return rot_matx
+
+    def __neg__(self):
+        """ Negate the quaternion
+
+        Returns:
+            The negated form of the quaternion
+        """
+        return Quaternion(-self.w, -self.x, -self.y, -self.z)
+
+    def get_euler(self):
+        """Return an euler angle representation of the quaternion. Taken from
+        [wikipedia](https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles)
+
+        Returns:
+            The list of euler angles x,y,z
+        """
+        w = self.w
+        x = self.x
+        y = self.y
+        z = self.z
+
+        ysqr = y * y
+
+        t0 = +2.0 * (w * x + y * z)
+        t1 = +1.0 - 2.0 * (x * x + ysqr)
+        X = math.atan2(t0, t1)
+
+        t2 = +2.0 * (w * y - z * x)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        Y = math.asin(t2)
+
+        t3 = +2.0 * (w * z + x * y)
+        t4 = +1.0 - 2.0 * (ysqr + z * z)
+        Z = math.atan2(t3, t4)
+
+        return [X, Y, Z]
+
+    def get_rotation_vector(self):
+        angle = math.acos(self.w)*2
+        if angle == 0:
+            return [0, 0, 0]
+        x = angle * self.x/math.sin(angle/2)
+        y = angle * self.y/math.sin(angle/2)
+        z = angle * self.z/math.sin(angle/2)
+        return [x, y, z]
+
+    def get_xyz_vector(self):
+        return [self.x, self.y, self.z]
+
+    @staticmethod
+    def average(quats, init, threshold=0.01):
+        qt_bar = init
+        dist = 5
+        while dist > threshold:
+            error = [0, 0, 0]
+            for element in quats:
+                addition = (element*(qt_bar.inverse())).get_rotation_vector()
+                error = [error[idx]+addition[idx] for idx in range(3)]
+                # TODO: take to axis angle for averaging then back to
+                # quaternion
+            error = [element/len(quats) for element in error]
+            error = Quaternion.from_rotation_vector(error)
+            qt_bar_new = error*qt_bar
+            dist = qt_bar.distance(qt_bar_new)
+            qt_bar = qt_bar_new
+        return qt_bar
+
+    @staticmethod
+    def vector_average(quats):
+        to_return = [0]*4
+        for quat in quats:
+            to_return[0] += quat.w
+            to_return[1] += quat.x
+            to_return[2] += quat.y
+            to_return[3] += quat.z
+        n = len(quats)
+        return [to_return[0]/n, to_return[1]/n, to_return[2]/n, to_return[3]/n]

@@ -1,5 +1,5 @@
-python_quaternions
-==================
+quaternions
+===========
 
 .. image:: https://readthedocs.org/projects/quaternions/badge/?version=latest
     :target: http://quaternions.readthedocs.org/en/latest/?badge=latest
