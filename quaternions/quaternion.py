@@ -1,5 +1,6 @@
 """
 A module to hold and work with Quaternions
+Repo at: https://github.com/mjsobrep/quaternions
 """
 
 # The MIT License (MIT)
