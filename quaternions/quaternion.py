@@ -1,5 +1,6 @@
 """
 A module to hold and work with Quaternions
+Repo at: https://github.com/mjsobrep/quaternions
 """
 
 # The MIT License (MIT)
@@ -251,6 +252,25 @@ class Quaternion(object):
         return cls(math.cos(angle/2), axis[0]*sin_result, axis[1]*sin_result,
                    axis[2]*sin_result)
 
+    @classmethod
+    def from_rotation_vector(cls, vect):
+        """
+        Constructs a quaternion from a rotation vector.
+
+        Args:
+            vect: A rotation vector with angle as the magnitude and vector for
+                  the vector.
+
+        Returns:
+            The constructed quaternion
+        """
+        angle = math.sqrt(sum(element**2 for element in vect))
+        if angle == 0:
+            axis = [1, 0, 0]
+        else:
+            axis = [element/angle for element in vect]
+        return cls.from_axis_angle(axis, angle)
+
     def __add__(self, other):
         """
         Add together two quaternions.
@@ -451,7 +471,7 @@ class Quaternion(object):
             The rotation matrix which this quaternion is equivalent to as a
             list of three lists of three elements each
         """
-        rot_matx = [[0]*3]*3
+        rot_matx = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
         rot_matx[0][0] = (math.pow(self.w, 2) + math.pow(self.x, 2) -
                           math.pow(self.y, 2) - math.pow(self.z, 2))
         rot_matx[0][1] = (2*self.x*self.y - 2*self.w*self.z)
@@ -464,6 +484,7 @@ class Quaternion(object):
         rot_matx[2][1] = (2*self.y*self.z + 2*self.w*self.x)
         rot_matx[2][2] = (math.pow(self.w, 2) - math.pow(self.x, 2) -
                           math.pow(self.y, 2) + math.pow(self.z, 2))
+        return rot_matx
 
     def __neg__(self):
         """ Negate the quaternion
@@ -472,3 +493,73 @@ class Quaternion(object):
             The negated form of the quaternion
         """
         return Quaternion(-self.w, -self.x, -self.y, -self.z)
+
+    def get_euler(self):
+        """Return an euler angle representation of the quaternion. Taken from
+        [wikipedia](https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles)
+
+        Returns:
+            The list of euler angles x,y,z
+        """
+        w = self.w
+        x = self.x
+        y = self.y
+        z = self.z
+
+        ysqr = y * y
+
+        t0 = +2.0 * (w * x + y * z)
+        t1 = +1.0 - 2.0 * (x * x + ysqr)
+        X = math.atan2(t0, t1)
+
+        t2 = +2.0 * (w * y - z * x)
+        t2 = +1.0 if t2 > +1.0 else t2
+        t2 = -1.0 if t2 < -1.0 else t2
+        Y = math.asin(t2)
+
+        t3 = +2.0 * (w * z + x * y)
+        t4 = +1.0 - 2.0 * (ysqr + z * z)
+        Z = math.atan2(t3, t4)
+
+        return [X, Y, Z]
+
+    def get_rotation_vector(self):
+        angle = math.acos(self.w)*2
+        if angle == 0:
+            return [0, 0, 0]
+        x = angle * self.x/math.sin(angle/2)
+        y = angle * self.y/math.sin(angle/2)
+        z = angle * self.z/math.sin(angle/2)
+        return [x, y, z]
+
+    def get_xyz_vector(self):
+        return [self.x, self.y, self.z]
+
+    @staticmethod
+    def average(quats, init, threshold=0.01):
+        qt_bar = init
+        dist = 5
+        while dist > threshold:
+            error = [0, 0, 0]
+            for element in quats:
+                addition = (element*(qt_bar.inverse())).get_rotation_vector()
+                error = [error[idx]+addition[idx] for idx in range(3)]
+                # TODO: take to axis angle for averaging then back to
+                # quaternion
+            error = [element/len(quats) for element in error]
+            error = Quaternion.from_rotation_vector(error)
+            qt_bar_new = error*qt_bar
+            dist = qt_bar.distance(qt_bar_new)
+            qt_bar = qt_bar_new
+        return qt_bar
+
+    @staticmethod
+    def vector_average(quats):
+        to_return = [0]*4
+        for quat in quats:
+            to_return[0] += quat.w
+            to_return[1] += quat.x
+            to_return[2] += quat.y
+            to_return[3] += quat.z
+        n = len(quats)
+        return [to_return[0]/n, to_return[1]/n, to_return[2]/n, to_return[3]/n]
