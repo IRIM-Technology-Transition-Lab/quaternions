@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='quaternions',
-      version='0.3',
+      version='0.4',
       description='A package to handle quaternions',
       long_description=readme(),
       classifiers=[
@@ -18,10 +18,10 @@ setup(name='quaternions',
         'Programming Language :: Python',
       ],
       keywords='quaternion transformations',
-      url='https://github.com/IRIM-Technology-Transition-Lab/quaternions',
+      url='https://github.com/mjsobrep/quaternions',
       author='Michael Sobrepera',
       author_email='mjsobrep@live.com',
-      license='Copyright (c) 2016 GTRC',
+      license='MIT',
       packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
       install_requires=[],
       include_package_data=True,
