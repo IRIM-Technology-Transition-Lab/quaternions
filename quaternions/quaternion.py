@@ -252,6 +252,25 @@ class Quaternion(object):
         return cls(math.cos(angle/2), axis[0]*sin_result, axis[1]*sin_result,
                    axis[2]*sin_result)
 
+    @classmethod
+    def from_rotation_vector(cls, vect):
+        """
+        Constructs a quaternion from a rotation vector.
+
+        Args:
+            vect: A rotation vector with angle as the magnitude and vector for 
+                  the vector. 
+
+        Returns:
+            The constructed quaternion
+        """
+        angle = math.sqrt(sum(element**2 for element in vect))
+        if angle==0:
+            axis = [1,0,0]
+        else:
+            axis = [element/angle for element in vect]
+        return cls.from_axis_angle(axis,angle)
+
     def __add__(self, other):
         """
         Add together two quaternions.
