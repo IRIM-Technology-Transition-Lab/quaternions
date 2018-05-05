@@ -550,3 +550,14 @@ class Quaternion(object):
             dist = qt_bar.distance(qt_bar_new)
             qt_bar = qt_bar_new
         return qt_bar
+
+    @staticmethod
+    def vector_average(quats):
+        to_return = [0]*4
+        for quat in quats:
+            to_return[0] += quat.w
+            to_return[1] += quat.x
+            to_return[2] += quat.y
+            to_return[3] += quat.z
+        n = len(quats)
+        return [to_return[0]/n, to_return[1]/n, to_return[2]/n, to_return[3]/n]
