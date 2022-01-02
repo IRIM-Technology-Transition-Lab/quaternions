@@ -10,6 +10,18 @@ python_quaternions
 
 .. image:: https://img.shields.io/pypi/v/quaternions.svg
     :target: https://pypi.python.org/pypi/quaternions
+    
+-----   
+    
+.. _lnk: https://github.com/mjsobrep/quaternions
+.. |lnk| replace:: **their personal fork** 
+
+**The IRIM Tech Transistion Lab no longer exists. This code is maintained by a former member in** |lnk|_ 
+
+-----
+
+`their personal fork <https://github.com/IRIM-Technology-Transition-Lab/quaternions>`_
+
 
 A library to handle quaternions. The library is partly tested (see tests). It
 would be great to get everything (edge cases and functions) under testing.
